@@ -1,0 +1,110 @@
+name: Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature. Please read our documentation first to ensure this aligns with the project's goals.
+
+  - type: checkboxes
+    id: prereqs
+    attributes:
+      label: Pre-submission checklist
+      description: Please confirm the following
+      options:
+        - label: I have read [docs/non_goals.md](https://github.com/payroll-engine/payroll-engine/blob/main/docs/non_goals.md) and this feature is not a non-goal
+          required: true
+        - label: I have read [docs/public_api.md](https://github.com/payroll-engine/payroll-engine/blob/main/docs/public_api.md) and understand the API stability guarantees
+          required: true
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this feature affect?
+      options:
+        - Ledger
+        - Funding Gate
+        - Payment Orchestrator
+        - Settlement/Reconciliation
+        - Liability Classification
+        - Event Store
+        - AI Advisory
+        - CLI
+        - Provider Protocol
+        - New Component
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem does this feature solve? Why is it needed?
+      placeholder: |
+        Currently, when I try to...
+
+        This is a problem because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work?
+      placeholder: |
+        I would like to be able to...
+
+        Example usage:
+        ```python
+        result = psp.some_new_method(...)
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What alternatives have you considered?
+      placeholder: |
+        - Alternative A: ...
+        - Alternative B: ...
+        - Current workaround: ...
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Breaking change?
+      description: Would this require breaking changes to the public API?
+      options:
+        - "No - additive only"
+        - "Yes - requires major version bump"
+        - "Unsure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: money_movement
+    attributes:
+      label: Money movement impact
+      description: Does this feature affect how money moves?
+      options:
+        - "No - advisory/informational only"
+        - "Yes - affects ledger, gates, or payments"
+        - "Unsure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Any other context, mockups, or examples

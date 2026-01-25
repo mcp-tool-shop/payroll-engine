@@ -1,0 +1,69 @@
+name: Question
+description: Ask a question about payroll-engine
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? We're happy to help. Please check the documentation first.
+
+  - type: checkboxes
+    id: prereqs
+    attributes:
+      label: Pre-submission checklist
+      description: Please confirm you've checked these resources
+      options:
+        - label: I have read the [README](https://github.com/payroll-engine/payroll-engine/blob/main/README.md)
+          required: true
+        - label: I have checked [docs/](https://github.com/payroll-engine/payroll-engine/tree/main/docs) for relevant documentation
+          required: true
+        - label: I have searched existing issues for similar questions
+          required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question category
+      description: What is your question about?
+      options:
+        - Getting started / Installation
+        - Configuration
+        - API usage
+        - Integration patterns
+        - Event handling
+        - AI Advisory features
+        - Provider implementation
+        - Database / Migrations
+        - Testing
+        - Deployment
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Any relevant context that helps us understand your situation
+      placeholder: |
+        I'm trying to...
+
+        My use case is...
+
+        I've tried...
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code example (if applicable)
+      description: Share any relevant code
+      render: python

@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: Payroll Engine
+message: >-
+  If you use this software in your research or product,
+  please cite it using the metadata below.
+type: software
+authors:
+  - name: Payroll Engine Contributors
+repository-code: https://github.com/payroll-engine/payroll-engine
+url: https://github.com/payroll-engine/payroll-engine
+abstract: >-
+  A library-first Payment Services Platform (PSP) core for
+  payroll and regulated money movement. Provides deterministic
+  append-only ledger, explicit funding gates, replayable
+  domain events, and advisory-only AI.
+keywords:
+  - payroll
+  - payments
+  - fintech
+  - ledger
+  - PSP
+  - financial infrastructure
+license: MIT
+version: 0.1.0
+date-released: 2025-01-25

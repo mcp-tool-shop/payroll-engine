@@ -1,0 +1,240 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "payroll-engine"
+version = "0.1.0"
+description = "US Payroll SaaS Engine with PSP - ledger, payment rails, settlement, and liability management"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "Payroll Engine Team" }
+]
+keywords = [
+    "payroll",
+    "payments",
+    "psp",
+    "ledger",
+    "ach",
+    "fednow",
+    "settlement",
+    "saas",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "sqlalchemy>=2.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+# =============================================================================
+# CORE: No optional dependencies - deterministic money movement only
+# =============================================================================
+# pip install payroll-engine  # Gets you ledger, funding gate, payments - that's it
+
+# =============================================================================
+# OPTIONAL: AI ML Models (advisory-only, cannot move money)
+# =============================================================================
+# pip install payroll-engine[ai]
+#
+# TWO-TIER AI SYSTEM:
+# - rules_baseline: Works WITHOUT this extra (stdlib only, included in core)
+# - ML models: Require this extra (numpy, sklearn, etc.)
+#
+# You do NOT need [ai] for rules-based advisors. Only install if you want
+# to use ML-based prediction models (when available).
+ai = [
+    # Future ML dependencies:
+    # "numpy>=1.24",
+    # "scikit-learn>=1.3",
+]
+
+# =============================================================================
+# OPTIONAL: Crypto/Blockchain integrations (future)
+# =============================================================================
+# pip install payroll-engine[crypto]
+#
+# Reserved for future web3/blockchain integrations. Not currently used.
+crypto = [
+    # Future: web3>=6.0, eth-account>=0.9, etc.
+]
+
+# =============================================================================
+# Database drivers
+# =============================================================================
+postgres = [
+    "psycopg2-binary>=2.9",
+]
+asyncpg = [
+    "asyncpg>=0.29",
+    "sqlalchemy[asyncio]>=2.0",
+]
+
+# =============================================================================
+# Full web stack
+# =============================================================================
+web = [
+    "fastapi>=0.109",
+    "uvicorn[standard]>=0.27",
+    "python-dotenv>=1.0",
+]
+
+# =============================================================================
+# Development tools
+# =============================================================================
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.0",
+    "ruff>=0.3",
+    "pyright>=1.1",
+    "psycopg2-binary>=2.9",
+    "httpx>=0.26",
+]
+
+# =============================================================================
+# Bundle: Everything
+# =============================================================================
+all = [
+    "payroll-engine[ai,crypto,postgres,asyncpg,web,dev]",
+]
+
+[project.urls]
+Homepage = "https://github.com/payroll-engine/payroll-engine"
+Documentation = "https://github.com/payroll-engine/payroll-engine/tree/main/docs"
+Repository = "https://github.com/payroll-engine/payroll-engine"
+Issues = "https://github.com/payroll-engine/payroll-engine/issues"
+Changelog = "https://github.com/payroll-engine/payroll-engine/blob/main/CHANGELOG.md"
+
+[project.scripts]
+psp = "payroll_engine.psp.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/payroll_engine"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/psp_build_pack_v2",
+    "/examples",
+    "/docs",
+]
+
+# =============================================================================
+# Ruff (Linter + Formatter)
+# =============================================================================
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+    "ERA",    # eradicate (commented-out code)
+    "PL",     # pylint
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "PLR0913",  # Too many arguments (payroll has many params)
+    "PLR2004",  # Magic value comparison (amounts, status codes)
+    "E501",     # Line too long (formatter handles this)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["payroll_engine"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "ARG",     # Unused arguments in fixtures
+    "PLR2004", # Magic values in tests are fine
+]
+
+# =============================================================================
+# Pyright (Type Checker)
+# =============================================================================
+[tool.pyright]
+include = ["src"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportUnusedImport = true
+reportUnusedVariable = true
+reportDuplicateImport = true
+
+# =============================================================================
+# Pytest
+# =============================================================================
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "unit: Unit tests (no database)",
+    "integration: Integration tests (requires database)",
+    "red_team: Adversarial tests for constraint validation",
+    "slow: Tests that take >1 second",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# =============================================================================
+# Coverage
+# =============================================================================
+[tool.coverage.run]
+source = ["src/payroll_engine"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+    "@abstractmethod",
+]
+show_missing = true
+fail_under = 80

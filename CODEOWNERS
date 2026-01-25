@@ -1,0 +1,55 @@
+# CODEOWNERS
+#
+# These owners will be requested for review when someone opens a pull request
+# that modifies code they own.
+#
+# The last matching pattern takes precedence.
+
+# =============================================================================
+# Default owners for everything
+# =============================================================================
+* @payroll-engine/maintainers
+
+# =============================================================================
+# PSP Core - requires financial domain expertise
+# =============================================================================
+/src/payroll_engine/psp/ @payroll-engine/psp-core
+/tests/psp/ @payroll-engine/psp-core
+
+# =============================================================================
+# Public API - changes require extra scrutiny
+# =============================================================================
+/docs/public_api.md @payroll-engine/maintainers
+/src/payroll_engine/psp/psp.py @payroll-engine/maintainers
+/src/payroll_engine/psp/config.py @payroll-engine/maintainers
+
+# =============================================================================
+# Event Schema - breaking changes are serious
+# =============================================================================
+/event_schema.json @payroll-engine/maintainers @payroll-engine/psp-core
+/src/payroll_engine/psp/events/ @payroll-engine/psp-core
+
+# =============================================================================
+# Database Schema - migrations need DB expertise
+# =============================================================================
+/psp_build_pack_v2/psp_build_pack/migrations/ @payroll-engine/db-team
+
+# =============================================================================
+# Security-sensitive areas
+# =============================================================================
+/SECURITY.md @payroll-engine/security
+/docs/threat_model.md @payroll-engine/security
+
+# =============================================================================
+# CI/CD and Infrastructure
+# =============================================================================
+/.github/ @payroll-engine/devops
+/docker-compose.yml @payroll-engine/devops
+/Makefile @payroll-engine/devops
+
+# =============================================================================
+# Documentation - lighter review
+# =============================================================================
+/docs/ @payroll-engine/docs
+/README.md @payroll-engine/docs
+/CHANGELOG.md @payroll-engine/maintainers

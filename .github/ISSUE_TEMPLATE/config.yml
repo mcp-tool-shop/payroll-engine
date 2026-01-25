@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/payroll-engine/payroll-engine/tree/main/docs
+    about: Check the documentation before opening an issue
+  - name: Discussions
+    url: https://github.com/payroll-engine/payroll-engine/discussions
+    about: Ask questions or discuss ideas in GitHub Discussions
+  - name: Security Vulnerabilities
+    url: mailto:security@payroll-engine.com
+    about: Report sensitive security issues via email (not public issues)

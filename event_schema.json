@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PSP Domain Event Schema Baseline",
+  "description": "Baseline schema for event compatibility checking. DO NOT REMOVE fields.",
+  "version": "1.0.0",
+  "events": {
+    "PaymentInstructionCreated": {
+      "description": "Emitted when a payment instruction is created",
+      "category": "payment",
+      "payload": {
+        "required": ["instruction_id", "amount"],
+        "optional": ["payee_name", "payee_type", "rail", "purpose"]
+      }
+    },
+    "PaymentSubmitted": {
+      "description": "Emitted when a payment is submitted to a provider",
+      "category": "payment",
+      "payload": {
+        "required": ["instruction_id", "provider_ref"],
+        "optional": ["provider_name", "rail"]
+      }
+    },
+    "PaymentAccepted": {
+      "description": "Emitted when a provider accepts a payment for processing",
+      "category": "payment",
+      "payload": {
+        "required": ["instruction_id", "provider_ref"],
+        "optional": ["expected_settlement_date"]
+      }
+    },
+    "PaymentSettled": {
+      "description": "Emitted when a payment is confirmed settled",
+      "category": "settlement",
+      "payload": {
+        "required": ["instruction_id"],
+        "optional": ["settlement_id", "provider_ref", "settled_at", "trace_id"]
+      }
+    },
+    "PaymentReturned": {
+      "description": "Emitted when a payment is returned by the bank",
+      "category": "settlement",
+      "payload": {
+        "required": ["instruction_id", "return_code"],
+        "optional": ["return_reason", "return_date"]
+      }
+    },
+    "PaymentFailed": {
+      "description": "Emitted when a payment submission fails",
+      "category": "payment",
+      "payload": {
+        "required": ["instruction_id", "error_code"],
+        "optional": ["error_message", "retry_after"]
+      }
+    },
+    "LedgerEntryPosted": {
+      "description": "Emitted when a ledger entry is posted",
+      "category": "ledger",
+      "payload": {
+        "required": ["entry_id", "debit_account", "credit_account", "amount"],
+        "optional": ["entry_type", "source_type", "source_id"]
+      }
+    },
+    "LedgerEntryReversed": {
+      "description": "Emitted when a ledger entry is reversed",
+      "category": "ledger",
+      "payload": {
+        "required": ["entry_id", "reversal_entry_id"],
+        "optional": ["reason"]
+      }
+    },
+    "ReservationCreated": {
+      "description": "Emitted when a balance reservation is created",
+      "category": "funding",
+      "payload": {
+        "required": ["reservation_id", "account_id", "amount"],
+        "optional": ["purpose", "expires_at"]
+      }
+    },
+    "ReservationReleased": {
+      "description": "Emitted when a balance reservation is released",
+      "category": "funding",
+      "payload": {
+        "required": ["reservation_id"],
+        "optional": ["release_type", "released_at"]
+      }
+    },
+    "FundingRequested": {
+      "description": "Emitted when funding is requested for a batch",
+      "category": "funding",
+      "payload": {
+        "required": ["batch_id", "amount"],
+        "optional": ["requested_at"]
+      }
+    },
+    "FundingApproved": {
+      "description": "Emitted when funding is approved",
+      "category": "funding",
+      "payload": {
+        "required": ["batch_id"],
+        "optional": ["reservation_id", "approved_at"]
+      }
+    },
+    "FundingBlocked": {
+      "description": "Emitted when funding is blocked due to insufficient funds or policy",
+      "category": "funding",
+      "payload": {
+        "required": ["batch_id", "reason"],
+        "optional": ["shortfall_amount", "policy_name"]
+      }
+    },
+    "LiabilityClassified": {
+      "description": "Emitted when liability is classified for a return",
+      "category": "liability",
+      "payload": {
+        "required": ["instruction_id", "return_code", "liability_party"],
+        "optional": ["error_origin", "recovery_path", "amount"]
+      }
+    },
+    "ReturnAdvisoryGenerated": {
+      "description": "Emitted when AI generates a return root-cause advisory (advisory only, no action taken)",
+      "category": "advisory",
+      "payload": {
+        "required": ["advisory_id", "payment_id", "return_code", "suggested_error_origin", "confidence"],
+        "optional": ["suggested_liability_party", "suggested_recovery_path", "model_name", "model_version", "feature_schema_hash", "contributing_factors", "explanation"]
+      }
+    },
+    "FundingRiskAdvisoryGenerated": {
+      "description": "Emitted when AI generates a funding risk advisory (advisory only, no action taken)",
+      "category": "advisory",
+      "payload": {
+        "required": ["advisory_id", "risk_score", "risk_band"],
+        "optional": ["payroll_batch_id", "predicted_amount", "suggested_reserve_buffer", "model_name", "model_version", "feature_schema_hash", "contributing_factors", "explanation"]
+      }
+    },
+    "AIAdvisoryReportGenerated": {
+      "description": "Emitted when AI generates an advisory insights report (weekly/daily analysis)",
+      "category": "advisory",
+      "payload": {
+        "required": ["report_id", "period_start", "period_end", "total_advisories", "overall_accuracy"],
+        "optional": ["insight_count", "critical_insights", "warning_insights", "by_return_code", "by_tenant", "by_model_version"]
+      }
+    },
+    "TenantRiskProfileGenerated": {
+      "description": "Emitted when AI generates a tenant risk profile (advisory only, no action taken)",
+      "category": "advisory",
+      "payload": {
+        "required": ["profile_id", "tenant_id", "risk_level", "risk_score"],
+        "optional": ["risk_trend", "requires_review", "requires_immediate_action", "signal_count", "critical_signals", "component_scores", "recommendations"]
+      }
+    },
+    "RunbookAssistanceGenerated": {
+      "description": "Emitted when AI generates runbook assistance for an incident (advisory only, no action taken)",
+      "category": "advisory",
+      "payload": {
+        "required": ["assistance_id", "incident_id", "incident_type", "runbook_name"],
+        "optional": ["query_count", "cause_count", "step_count", "estimated_severity", "warnings"]
+      }
+    }
+  },
+  "rules": {
+    "immutable_event_names": true,
+    "additive_payload_only": true,
+    "required_fields_need_default_for_new": true
+  }
+}

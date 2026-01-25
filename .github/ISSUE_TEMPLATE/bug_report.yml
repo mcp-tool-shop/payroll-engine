@@ -1,0 +1,105 @@
+name: Bug Report
+description: Report a bug in payroll-engine
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill out the form below.
+
+        **Before submitting**, please confirm you've read the relevant documentation.
+
+  - type: checkboxes
+    id: prereqs
+    attributes:
+      label: Pre-submission checklist
+      description: Please confirm the following
+      options:
+        - label: I have read [docs/public_api.md](https://github.com/payroll-engine/payroll-engine/blob/main/docs/public_api.md) and am using only the public API
+          required: true
+        - label: I have read [docs/non_goals.md](https://github.com/payroll-engine/payroll-engine/blob/main/docs/non_goals.md) and this is not a non-goal
+          required: true
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Ledger
+        - Funding Gate
+        - Payment Orchestrator
+        - Settlement/Reconciliation
+        - Liability Classification
+        - Event Store
+        - AI Advisory (rules-baseline)
+        - AI Advisory (ML models)
+        - CLI
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear description of what the bug is
+      placeholder: What happened? What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Minimal code or steps to reproduce the behavior
+      placeholder: |
+        ```python
+        from payroll_engine.psp import PSP, PSPConfig
+        # ...
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide version information
+      placeholder: |
+        - payroll-engine version: 0.1.0
+        - Python version: 3.11.x
+        - OS: Ubuntu 22.04 / Windows 11 / macOS 14
+        - Database: PostgreSQL 16.x
+      render: markdown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - "Critical: Money movement affected / data corruption"
+        - "High: Core functionality broken"
+        - "Medium: Feature not working as documented"
+        - "Low: Minor issue / cosmetic"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or error messages
+      description: Please include any error messages or stack traces
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Any other context about the problem
