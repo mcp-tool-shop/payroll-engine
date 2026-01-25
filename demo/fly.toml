@@ -1,0 +1,33 @@
+# Fly.io configuration for Payroll Engine Demo
+# Deploy with: fly deploy --config demo/fly.toml
+
+app = "payroll-engine-demo"
+primary_region = "iad"
+
+[build]
+  dockerfile = "demo/Dockerfile"
+
+[env]
+  # API configuration
+  PORT = "8000"
+  # Database URL set via secrets: fly secrets set DEMO_DATABASE_URL=...
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 250
+    soft_limit = 200
+
+[[statics]]
+  guest_path = "/app/demo/ui"
+  url_prefix = "/"
+
+# Release command runs seeder on each deploy
+[deploy]
+  release_command = "python demo/scripts/seed.py --drop-first"

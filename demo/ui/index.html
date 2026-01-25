@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Engine Demo</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-green: #22c55e;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --accent-purple: #a855f7;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .demo-badge {
+            background: var(--accent-yellow);
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+
+        .nav-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .timeline-item:hover {
+            background: var(--bg-tertiary);
+            margin: -0.5rem;
+            padding: 0.5rem;
+            padding-left: 2.5rem;
+            padding-bottom: 2rem;
+            border-radius: 8px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .timeline-dot.return { background: var(--accent-red); }
+        .timeline-dot.success { background: var(--accent-green); }
+        .timeline-dot.warning { background: var(--accent-yellow); }
+        .timeline-dot.ai { background: var(--accent-purple); }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-type {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .timeline-time {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .timeline-details {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-blue { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+        .badge-green { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); }
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+        .badge-yellow { background: rgba(234, 179, 8, 0.2); color: var(--accent-yellow); }
+        .badge-purple { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+
+        /* Advisory Card */
+        .advisory-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: var(--accent-green);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .factors-list {
+            margin-top: 1rem;
+        }
+
+        .factor-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .factor-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Reports */
+        .report-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+            transition: background 0.2s;
+        }
+
+        .report-btn:hover {
+            background: #2563eb;
+        }
+
+        .report-content {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        /* Amount */
+        .amount {
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .amount-positive { color: var(--accent-green); }
+        .amount-negative { color: var(--accent-red); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">PE</div>
+            <h1>Payroll Engine</h1>
+        </div>
+        <span class="demo-badge">Demo - Read Only - Fake Data</span>
+    </header>
+
+    <nav class="nav">
+        <div class="nav-item active" data-tab="timeline">Timeline</div>
+        <div class="nav-item" data-tab="ledger">Ledger</div>
+        <div class="nav-item" data-tab="advisories">Advisories</div>
+        <div class="nav-item" data-tab="reports">Reports</div>
+    </nav>
+
+    <main class="main">
+        <!-- Timeline Tab -->
+        <div id="timeline" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Event Timeline</h2>
+                    <span class="text-muted" id="event-count">Loading...</span>
+                </div>
+                <div class="timeline" id="timeline-container">
+                    <div class="loading">Loading events...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ledger Tab -->
+        <div id="ledger" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Ledger Entries</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Amount</th>
+                                <th>Memo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-table">
+                            <tr><td colspan="6" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advisories Tab -->
+        <div id="advisories" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">AI Advisories</h2>
+                </div>
+                <div id="advisories-container">
+                    <div class="loading">Loading advisories...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Reports</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Generate read-only reports from stored events. No database writes occur.
+                </p>
+                <div>
+                    <button class="report-btn" onclick="loadReport('ai-advisory')">AI Advisory Report</button>
+                    <button class="report-btn" onclick="loadReport('tenant-risk')">Tenant Risk Profile</button>
+                    <button class="report-btn" onclick="loadReport('runbook')">Runbook Assistance</button>
+                </div>
+                <div id="report-output" class="report-content" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Event Detail Modal -->
+    <div class="modal" id="event-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Event Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000/api'
+            : '/api';
+
+        // Tab switching
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(item.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Load data
+        async function loadEvents() {
+            try {
+                const res = await fetch(`${API_BASE}/events?limit=50`);
+                const events = await res.json();
+
+                document.getElementById('event-count').textContent = `${events.length} events`;
+
+                const container = document.getElementById('timeline-container');
+                container.innerHTML = events.map(event => {
+                    const dotClass = getDotClass(event.event_type);
+                    const time = new Date(event.occurred_at).toLocaleString();
+                    const details = formatEventDetails(event);
+
+                    return `
+                        <div class="timeline-item" onclick="showEventDetail('${event.id}')">
+                            <div class="timeline-dot ${dotClass}"></div>
+                            <div class="timeline-header">
+                                <span class="timeline-type">${event.event_type}</span>
+                                <span class="timeline-time">${time}</span>
+                            </div>
+                            <div class="timeline-details">${details}</div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Failed to load events:', e);
+            }
+        }
+
+        function getDotClass(eventType) {
+            if (eventType.includes('Return') || eventType.includes('Liability')) return 'return';
+            if (eventType.includes('AI') || eventType.includes('Advisory') || eventType.includes('Risk') || eventType.includes('Runbook')) return 'ai';
+            if (eventType.includes('Settled') || eventType.includes('Approved')) return 'success';
+            return '';
+        }
+
+        function formatEventDetails(event) {
+            const p = event.payload;
+            switch (event.event_type) {
+                case 'PayrollBatchCommitted':
+                    return `${p.employee_count} employees, $${p.total_amount}`;
+                case 'FundingGateEvaluated':
+                    return `${p.gate_type} gate: ${p.result}`;
+                case 'PaymentSubmitted':
+                    return `${p.employee_name}: $${p.amount}`;
+                case 'PaymentReturned':
+                    return `${p.employee_name}: $${p.amount} (${p.return_code})`;
+                case 'AIAdvisoryEmitted':
+                    return `${p.advisory_type}: ${(p.confidence * 100).toFixed(0)}% confidence`;
+                case 'TenantRiskProfileGenerated':
+                    return `Risk tier: ${p.risk_tier}, trend: ${p.trend}`;
+                case 'RunbookAssistanceGenerated':
+                    return `Incident: ${p.incident_type}`;
+                default:
+                    return event.correlation_id ? `Correlation: ${event.correlation_id.slice(0, 8)}...` : '';
+            }
+        }
+
+        async function showEventDetail(eventId) {
+            try {
+                const res = await fetch(`${API_BASE}/events/${eventId}`);
+                const event = await res.json();
+
+                document.getElementById('modal-title').textContent = event.event_type;
+                document.getElementById('modal-body').innerHTML = `
+                    <p><strong>Time:</strong> ${new Date(event.occurred_at).toLocaleString()}</p>
+                    <p><strong>Correlation:</strong> ${event.correlation_id || 'N/A'}</p>
+                    <hr style="margin: 1rem 0; border-color: var(--border);">
+                    <pre style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; overflow-x: auto;">${JSON.stringify(event.payload, null, 2)}</pre>
+                `;
+                document.getElementById('event-modal').classList.add('active');
+            } catch (e) {
+                console.error('Failed to load event:', e);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('event-modal').classList.remove('active');
+        }
+
+        async function loadLedger() {
+            try {
+                const res = await fetch(`${API_BASE}/ledger/entries?limit=50`);
+                const entries = await res.json();
+
+                document.getElementById('ledger-table').innerHTML = entries.map(entry => `
+                    <tr>
+                        <td>${new Date(entry.created_at).toLocaleString()}</td>
+                        <td><span class="badge badge-${getEntryBadgeClass(entry.entry_type)}">${entry.entry_type}</span></td>
+                        <td style="font-family: monospace; font-size: 0.75rem;">${entry.debit_account_id.slice(0, 8)}...</td>
+                        <td style="font-family: monospace; font-size: 0.75rem;">${entry.credit_account_id.slice(0, 8)}...</td>
+                        <td class="amount ${entry.entry_type === 'reversal' ? 'amount-negative' : ''}">$${entry.amount}</td>
+                        <td>${entry.memo || '-'}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error('Failed to load ledger:', e);
+            }
+        }
+
+        function getEntryBadgeClass(type) {
+            switch (type) {
+                case 'funding': return 'blue';
+                case 'reservation': return 'yellow';
+                case 'payment': return 'green';
+                case 'reversal': return 'red';
+                default: return 'blue';
+            }
+        }
+
+        async function loadAdvisories() {
+            try {
+                const res = await fetch(`${API_BASE}/advisories?limit=20`);
+                const advisories = await res.json();
+
+                document.getElementById('advisories-container').innerHTML = advisories.map(adv => `
+                    <div class="advisory-card">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span class="badge badge-purple">${adv.advisory_type}</span>
+                            <span style="color: var(--text-muted); font-size: 0.75rem;">${new Date(adv.occurred_at).toLocaleString()}</span>
+                        </div>
+                        <p style="margin-bottom: 0.5rem;">${adv.explanation}</p>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span style="color: var(--text-secondary); font-size: 0.875rem;">Confidence:</span>
+                            <div class="confidence-bar" style="flex: 1;">
+                                <div class="confidence-fill" style="width: ${(adv.confidence * 100).toFixed(0)}%;"></div>
+                            </div>
+                            <span style="font-weight: 600;">${(adv.confidence * 100).toFixed(0)}%</span>
+                        </div>
+                        ${adv.payload.contributing_factors ? `
+                            <div class="factors-list">
+                                <strong style="font-size: 0.875rem; color: var(--text-secondary);">Contributing Factors</strong>
+                                ${adv.payload.contributing_factors.map(f => `
+                                    <div class="factor-item">
+                                        <span>${f.factor}</span>
+                                        <span style="color: var(--text-muted);">${f.value} (${(f.weight * 100).toFixed(0)}%)</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Failed to load advisories:', e);
+            }
+        }
+
+        async function loadReport(type) {
+            const output = document.getElementById('report-output');
+            output.style.display = 'block';
+            output.textContent = 'Loading...';
+
+            try {
+                let url;
+                switch (type) {
+                    case 'ai-advisory':
+                        url = `${API_BASE}/reports/ai-advisory?format=md`;
+                        break;
+                    case 'tenant-risk':
+                        url = `${API_BASE}/reports/tenant-risk?format=md`;
+                        break;
+                    case 'runbook':
+                        url = `${API_BASE}/reports/runbook?incident=payment_return&return_code=R01&format=md`;
+                        break;
+                }
+
+                const res = await fetch(url);
+                const text = await res.text();
+                output.textContent = text;
+            } catch (e) {
+                output.textContent = 'Error loading report: ' + e.message;
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('event-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'event-modal') closeModal();
+        });
+
+        // Initial load
+        loadEvents();
+        loadLedger();
+        loadAdvisories();
+    </script>
+</body>
+</html>
