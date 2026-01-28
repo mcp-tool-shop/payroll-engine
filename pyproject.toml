@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [
-    { name = "Payroll Engine Team" }
+    {name = "mcp-tool-shop", email = "64996768+mcp-tool-shop@users.noreply.github.com"}
 ]
 keywords = [
     "payroll",
@@ -21,6 +21,8 @@ keywords = [
     "fednow",
     "settlement",
     "saas",
+    "financial",
+    "accounting",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -42,20 +44,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# =============================================================================
-# CORE: No optional dependencies - deterministic money movement only
-# =============================================================================
-# pip install payroll-engine  # Gets you ledger, funding gate, payments - that's it
+# Core: No optional dependencies - deterministic money movement only
+# pip install payroll-engine - Gets you ledger, funding gate, payments - that's it
 
-# =============================================================================
-# OPTIONAL: AI ML Models (advisory-only, cannot move money)
-# =============================================================================
+# Optional: AI ML Models (advisory-only, cannot move money)
 # pip install payroll-engine[ai]
-#
-# TWO-TIER AI SYSTEM:
+# Two-tier AI system:
 # - rules_baseline: Works WITHOUT this extra (stdlib only, included in core)
 # - ML models: Require this extra (numpy, sklearn, etc.)
-#
 # You do NOT need [ai] for rules-based advisors. Only install if you want
 # to use ML-based prediction models (when available).
 ai = [
@@ -64,19 +60,14 @@ ai = [
     # "scikit-learn>=1.3",
 ]
 
-# =============================================================================
-# OPTIONAL: Crypto/Blockchain integrations (future)
-# =============================================================================
+# Optional: Crypto/Blockchain integrations (future)
 # pip install payroll-engine[crypto]
-#
 # Reserved for future web3/blockchain integrations. Not currently used.
 crypto = [
     # Future: web3>=6.0, eth-account>=0.9, etc.
 ]
 
-# =============================================================================
 # Database drivers
-# =============================================================================
 postgres = [
     "psycopg2-binary>=2.9",
 ]
@@ -85,18 +76,14 @@ asyncpg = [
     "sqlalchemy[asyncio]>=2.0",
 ]
 
-# =============================================================================
 # Full web stack
-# =============================================================================
 web = [
     "fastapi>=0.109",
     "uvicorn[standard]>=0.27",
     "python-dotenv>=1.0",
 ]
 
-# =============================================================================
 # Development tools
-# =============================================================================
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
@@ -107,19 +94,17 @@ dev = [
     "httpx>=0.26",
 ]
 
-# =============================================================================
 # Bundle: Everything
-# =============================================================================
 all = [
     "payroll-engine[ai,crypto,postgres,asyncpg,web,dev]",
 ]
 
 [project.urls]
-Homepage = "https://github.com/payroll-engine/payroll-engine"
-Documentation = "https://github.com/payroll-engine/payroll-engine/tree/main/docs"
-Repository = "https://github.com/payroll-engine/payroll-engine"
-Issues = "https://github.com/payroll-engine/payroll-engine/issues"
-Changelog = "https://github.com/payroll-engine/payroll-engine/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/mcp-tool-shop/payroll-engine"
+Documentation = "https://github.com/mcp-tool-shop/payroll-engine/tree/main/docs"
+Repository = "https://github.com/mcp-tool-shop/payroll-engine"
+Issues = "https://github.com/mcp-tool-shop/payroll-engine/issues"
+Changelog = "https://github.com/mcp-tool-shop/payroll-engine/blob/main/CHANGELOG.md"
 
 [project.scripts]
 psp = "payroll_engine.psp.cli:main"
@@ -135,9 +120,7 @@ include = [
     "/docs",
 ]
 
-# =============================================================================
 # Ruff (Linter + Formatter)
-# =============================================================================
 [tool.ruff]
 line-length = 100
 target-version = "py311"
@@ -175,9 +158,7 @@ known-first-party = ["payroll_engine"]
     "PLR2004", # Magic values in tests are fine
 ]
 
-# =============================================================================
 # Pyright (Type Checker)
-# =============================================================================
 [tool.pyright]
 include = ["src"]
 exclude = [
@@ -193,9 +174,7 @@ reportUnusedImport = true
 reportUnusedVariable = true
 reportDuplicateImport = true
 
-# =============================================================================
 # Pytest
-# =============================================================================
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
@@ -216,9 +195,7 @@ filterwarnings = [
     "ignore::DeprecationWarning",
 ]
 
-# =============================================================================
 # Coverage
-# =============================================================================
 [tool.coverage.run]
 source = ["src/payroll_engine"]
 branch = true
